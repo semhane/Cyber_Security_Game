@@ -137,6 +137,15 @@ class CyberDefendApp(QWidget):
             }}
         """)
         box_layout.addWidget(init_btn)
+        
+        # Login Link - added under the initialize training button
+        login_label = QLabel("<a href='#' style='text-decoration: none; color: #00FF00;'>Already have an account?</a>")
+        login_label.setStyleSheet(f"color: {green}; font: bold 12pt Courier; border: none; background-color: transparent;")
+        login_label.setAlignment(Qt.AlignRight)
+        login_label.setOpenExternalLinks(True)
+        login_label.linkActivated.connect(self.open_login_page)
+        box_layout.addWidget(login_label)
+        box_layout.addSpacing(10)  # Add a bit of space at the bottom
 
         # Center layout
         center_layout = QVBoxLayout()
@@ -151,6 +160,16 @@ class CyberDefendApp(QWidget):
         outer_layout.addStretch()
         outer_layout.addLayout(center_layout)
         outer_layout.addStretch()
+
+    def open_login_page(self):
+        # This function will be called when the login link is clicked
+        # Add code here to open your login page
+        print("Opening login page...")
+        # You could close this window and open the login window:
+        # self.close()
+        # from login import CyberDefendLoginApp
+        # self.login_window = CyberDefendLoginApp()
+        # self.login_window.show()
 
 
 if __name__ == "__main__":

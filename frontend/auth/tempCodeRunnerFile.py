@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QLabel, QLineEdit, QPushButton,
-    QVBoxLayout, QComboBox, QHBoxLayout, QFrame
+    QVBoxLayout, QComboBox, QFrame, QSizePolicy
 )
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
@@ -20,13 +20,26 @@ class CyberDefendApp(QWidget):
             self.close()
 
     def resizeEvent(self, event):
-        # Resize the rectangle when screen size changes
-     if hasattr(self, 'box_frame'):
-        self.box_frame.setFixedWidth(int(self.width() * 0.7))
+        if hasattr(self, 'box_frame'):
+            self.box_frame.setFixedWidth(int(self.width() * 0.5))
 
     def init_ui(self):
+        # Define colors
         green = "#00FF00"
         darker_green = "#003300"
+
+        # Custom Title Bar
+        title_label = QLabel("CYBERDEFEND")
+        title_font = QFont("Arial", 65, QFont.Bold)
+        title_label.setFont(title_font)
+        title_label.setStyleSheet(f"color: {green};")
+        title_label.setAlignment(Qt.AlignCenter)
+
+        subtitle = QLabel("SECURITY AWARENESS TRAINING")
+        subtitle_font = QFont("Courier", 36, QFont.Normal)
+        subtitle.setFont(subtitle_font)
+        subtitle.setStyleSheet(f"color: {green};")
+        subtitle.setAlignment(Qt.AlignCenter)
 
         # Main Rectangle Box
         self.box_frame = QFrame()
@@ -34,106 +47,110 @@ class CyberDefendApp(QWidget):
             QFrame {{
                 border: 2px solid {green};
                 background-color: black;
+                border-radius: 10px;
             }}
         """)
+        self.box_frame.setFixedWidth(int(self.width() * 0.5))
         box_layout = QVBoxLayout(self.box_frame)
 
-        # Registration Title Inside Box
+        # Title inside box
         reg_label = QLabel("AGENT REGISTRATION")
-        reg_label.setFont(QFont("Courier", 14, QFont.Bold))
+        reg_label.setFont(QFont("Courier", 16, QFont.Bold))
         reg_label.setStyleSheet(f"""
             color: {green};
             background-color: {darker_green};
-            padding: 8px;
+            padding: 12px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
         """)
         reg_label.setAlignment(Qt.AlignCenter)
+        box_layout.addWidget(reg_label)
 
-        # Username
-        user_label = QLabel("USERNAME:")
-        user_label.setFont(QFont("Courier", 10))
-        user_label.setStyleSheet(f"color: {green};")
+        label_style = f"""
+            color: {green};
+            background-color: transparent;
+            font: bold 12pt Courier;
+            padding: 0px;
+            border: none;
+        """
 
-        # Password
-        pass_label = QLabel("PASSWORD:")
-        pass_label.setFont(QFont("Courier", 10))
-        pass_label.setStyleSheet(f"color: {green};")
-        pass_input = QLineEdit()
-        pass_input.setEchoMode(QLineEdit.Password)
-        pass_input.setStyleSheet(f"color: {green}; background-color: black; border: 1px solid {green};")
+        # Input Style
+        input_style = f"""
+            color: {green};
+            background-color: black;
+            border: 1px solid {green};
+            padding: 10px;
+            font-size: 14px;
+        """
 
-        # Security Level
-        sec_label = QLabel("SECURITY LEVEL:")
-        sec_label.setFont(QFont("Courier", 10))
-        sec_label.setStyleSheet(f"color: {green};")
-        sec_combo = QComboBox()
-        sec_combo.addItems(["BEGINNER", "INTERMEDIATE", "ADVANCED"])
-        sec_combo.setStyleSheet(f"color: {green}; background-color: black; border: 1px solid {green};")
+        def add_field(layout, label_text, widget):
+            label = QLabel(label_text)
+            label.setStyleSheet(label_style)
+            label.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+            layout.addWidget(label)
+            layout.addWidget(widget)
 
-        # Department
-        dep_label = QLabel("DEPARTMENT:")
-        dep_label.setFont(QFont("Courier", 10))
-        dep_label.setStyleSheet(f"color: {green};")
-        dep_combo = QComboBox()
-        dep_combo.addItems(["IT OPERATIONS", "HR", "FINANCE", "ENGINEERING"])
-        dep_combo.setStyleSheet(f"color: {green}; background-color: black; border: 1px solid {green};")
+        # Form Area
+        form_layout = QVBoxLayout()
+        form_layout.setSpacing(10)
+
+        username_input = QLineEdit()
+        username_input.setStyleSheet(input_style)
+
+        email_input = QLineEdit()
+        email_input.setStyleSheet(input_style)
+
+        password_input = QLineEdit()
+        password_input.setEchoMode(QLineEdit.Password)
+        password_input.setStyleSheet(input_style)
+
+        security_combo = QComboBox()
+        security_combo.addItems(["BEGINNER", "INTERMEDIATE", "ADVANCED"])
+        security_combo.setStyleSheet(input_style)
+
+        department_combo = QComboBox()
+        department_combo.addItems(["IT OPERATIONS", "HR", "FINANCE", "ENGINEERING"])
+        department_combo.setStyleSheet(input_style)
+
+        add_field(form_layout, "USERNAME:", username_input)
+        add_field(form_layout, "EMAIL:", email_input)
+        add_field(form_layout, "PASSWORD:", password_input)
+        add_field(form_layout, "SECURITY LEVEL:", security_combo)
+        add_field(form_layout, "DEPARTMENT:", department_combo)
+
+        box_layout.addLayout(form_layout)
 
         # Button
+        box_layout.addSpacing(15)
         init_btn = QPushButton("INITIALIZE TRAINING")
-        init_btn.setFont(QFont("Courier", 10))
+        init_btn.setFont(QFont("Courier", 12))
         init_btn.setStyleSheet(f"""
             QPushButton {{
-                color: {green};
-                background-color: black;
-                border: 1px solid {green};
-                padding: 6px;
-            }}
-            QPushButton:hover {{
                 background-color: {green};
                 color: black;
+                border: 1px solid {green};
+                padding: 10px;
+            }}
+            QPushButton:hover {{
+                color: {green};
+                background-color: black;
             }}
         """)
-
-        # Add elements to box layout
-        box_layout.addWidget(reg_label)
-        box_layout.addSpacing(10)
-        box_layout.addWidget(user_label)
-        box_layout.addWidget(user_input)
-        box_layout.addWidget(pass_label)
-        box_layout.addWidget(pass_input)
-        box_layout.addWidget(sec_label)
-        box_layout.addWidget(sec_combo)
-        box_layout.addWidget(dep_label)
-        box_layout.addWidget(dep_combo)
-        box_layout.addSpacing(10)
         box_layout.addWidget(init_btn)
 
-        # Title
-        title = QLabel("CYBERDEFEND")
-        title.setFont(QFont("Courier", 32, QFont.Bold))
-        title.setStyleSheet(f"color: {green};")
-        title.setAlignment(Qt.AlignCenter)
+        # Center layout
+        center_layout = QVBoxLayout()
+        center_layout.setAlignment(Qt.AlignCenter)
+        center_layout.addWidget(title_label)
+        center_layout.addWidget(subtitle)
+        center_layout.addSpacing(20)
+        center_layout.addWidget(self.box_frame)
 
-        subtitle = QLabel("SECURITY AWARENESS TRAINING")
-        subtitle.setFont(QFont("Courier", 14))
-        subtitle.setStyleSheet(f"color: {green};")
-        subtitle.setAlignment(Qt.AlignCenter)
-
-        # Center Layout
-        main_layout = QVBoxLayout()
-        main_layout.addSpacing(20)
-        main_layout.addWidget(title)
-        main_layout.addWidget(subtitle)
-        main_layout.addSpacing(30)
-
-        box_container = QHBoxLayout()
-        box_container.addStretch()
-        box_container.addWidget(self.box_frame)
-        box_container.addStretch()
-
-        main_layout.addLayout(box_container)
-        main_layout.addStretch()
-
-        self.setLayout(main_layout)
+        # Outer layout
+        outer_layout = QVBoxLayout(self)
+        outer_layout.addStretch()
+        outer_layout.addLayout(center_layout)
+        outer_layout.addStretch()
 
 
 if __name__ == "__main__":
