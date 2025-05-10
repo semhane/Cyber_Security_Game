@@ -59,7 +59,7 @@ class CyberDefendDashboardApp(QMainWindow):
                 # Get department name from departments table
                 if self.user_data.get("department_id"):
                     try:
-                        dept_result = supabase.table("departments").select("department_name").eq("department_id", self.user_data["department_id"]).execute()
+                        dept_result = supabase.table("departments").select("department_name").eq("id", self.user_data["department_id"]).execute()
                         if dept_result.data and len(dept_result.data) > 0:
                             self.user_data["department"] = dept_result.data[0]["department_name"]
                         else:
@@ -267,7 +267,10 @@ class CyberDefendDashboardApp(QMainWindow):
         total_xp = self.user_data.get("total_xp", 0)
         security_rank = self.calculate_rank(total_xp)
         
-        # left info with actual username and department
+        # Add rank emoji based on level
+        rank_emoji = "🔰" if security_rank == "BEGINNER" else "🎉" if security_rank == "INTERMEDIATE" else "🏆"
+
+        # Update left info with actual username and department
         left_info_text = QLabel(f"AGENT: {username}\nDEPARTMENT: {department}")
         left_info_text.setFont(QFont("Courier", 12))
         left_info_text.setStyleSheet(f"color: {green}; border: none;")
@@ -275,7 +278,7 @@ class CyberDefendDashboardApp(QMainWindow):
         left_info_frame.setStyleSheet(f"""
             QFrame {{
                 border: 2px solid {green};
-                padding: 2px;
+                padding: 10px;
                 border-radius: 10px;
                 background-color: black; 
             }}
@@ -283,15 +286,15 @@ class CyberDefendDashboardApp(QMainWindow):
         left_info_layout = QVBoxLayout(left_info_frame)
         left_info_layout.addWidget(left_info_text)
 
-        # right info with actual rank and XP
-        right_info_text = QLabel(f"RANK:{security_rank}\nXP: {total_xp}/400")
+        # Update right info with actual rank and XP
+        right_info_text = QLabel(f"RANK: {rank_emoji} {security_rank}\nXP: {total_xp}/400")
         right_info_text.setFont(QFont("Courier", 12))
         right_info_text.setStyleSheet(f"color: {green}; border: none;")
         right_info_frame = QFrame()
         right_info_frame.setStyleSheet(f"""
             QFrame {{
                 border: 2px solid {green};
-                padding: 8px;
+                padding: 10px;
                 border-radius: 10px;
                 background-color: black; 
             }}
@@ -320,6 +323,7 @@ class CyberDefendDashboardApp(QMainWindow):
         mission_title.setStyleSheet(f"""
             color: {green};
             background-color: {dark_gray};
+            padding: 12px;
             border-radius: 0px;
         """)
         mission_title.setAlignment(Qt.AlignCenter)
@@ -336,7 +340,7 @@ class CyberDefendDashboardApp(QMainWindow):
             frame.setStyleSheet(f"""
                 QFrame {{
                     border: 1px solid {color};
-                    padding: 8px;
+                    padding: 10px;
                     border-radius: 8px;
                     background-color: {dark_gray};
                 }}
